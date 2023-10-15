@@ -16,8 +16,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t ted-helloworld-playground-image .
 
-      #- name: Push Docker image to registry (optional)
-        #run: docker push your-image-name
+      - name: Push Docker image to registry (optional)
+        run: docker push ted-helloworld-playground-image
 
       - name: SSH into VM and deploy
         uses: appleboy/ssh-action@master
