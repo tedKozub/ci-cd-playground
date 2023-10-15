@@ -1,0 +1,31 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t ted-helloworld-playground-image .
+
+      #- name: Push Docker image to registry (optional)
+        #run: docker push your-image-name
+
+      - name: SSH into VM and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            docker stop ted-helloworld || true
+            docker rm ted-helloworld || true
+            docker run -d --name ted-helloworld -p 80:80 ted-helloworld-playground-image
